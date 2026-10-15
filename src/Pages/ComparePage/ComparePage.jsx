@@ -28,7 +28,14 @@ const specs = [
     values: ["Android 11", "Android 11", "Android 11", "Android 11"],
   },
 ];
-function ComparePage({ products }) {
+function ComparePage({
+  products,
+  compere,
+  wishlist,
+  toggleWishlist,
+  addToCart,
+  toggleCompare,
+}) {
   const [onlyDifferences, setOnlyDifferences] = useState(false);
   return (
     <>
@@ -44,14 +51,16 @@ function ComparePage({ products }) {
             <a href="">Сравнить</a>
           </div>
 
-          <h1 className="text-[18px] dark:text-white font-bold">Сравнение товаров</h1>
+          <h1 className="text-[18px] dark:text-white font-bold">
+            Сравнение товаров
+          </h1>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4 py-4">
               <button className="flex items-center gap-2 px-8 text-[17px] bg-red-500 py-1 rounded-4xl text-white ">
-                Смартфоны 5 <GoX size={23}  className="dark:text-white"/> 
+                Смартфоны 5 <GoX size={23} className="dark:text-white" />
               </button>
               <button className="flex items-center gap-2 px-8 text-[17px] border border-gray-300 py-1 rounded-4xl  dark:text-white ">
-                Смартфоны 5 <GoX size={23}  className="dark:text-white"/>
+                Смартфоны 5 <GoX size={23} className="dark:text-white" />
               </button>
               <button className="flex items-center gap-2 px-8 text-[17px] border border-gray-300 py-1 rounded-4xl dark:text-white  ">
                 Смартфоны 5 <GoX size={23} className="dark:text-white" />
@@ -59,8 +68,8 @@ function ComparePage({ products }) {
             </div>
             <div className="flex items-center  gap-2">
               <button className="border border-gray-300  dark:border-white  rounded-[50px] p-1.5">
-                <GoX  className="dark:text-white"/>
-              </button> 
+                <GoX className="dark:text-white" />
+              </button>
               <h2 className="text-[14px] dark:text-white ">Добавить товары</h2>
             </div>
           </div>
@@ -79,17 +88,23 @@ function ComparePage({ products }) {
           </div>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4  py-[32px]">
-          {
-            products.results.map((p)=>(
-              <ProductCard key={p.id} product={p} />
-            ))
-          }
+            {compere.map((p) => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                toggleCompare={toggleCompare}
+                toggleWishlist={toggleWishlist}
+                wishlist={wishlist}
+                addToCart={addToCart}
+              />
+            ))}
           </div>
           <div>
-            <h1 className="text-[18px] dark:text-white ">Характеристики товара</h1>
+            <h1 className="text-[18px] dark:text-white ">
+              Характеристики товара
+            </h1>
             <p className="text-gray-400 dark:text-white">Герцовка</p>
           </div>
-
 
           <div>
             {specs.map((spec, index) => (
@@ -99,8 +114,12 @@ function ComparePage({ products }) {
               >
                 {spec.values.map((value, i) => (
                   <div key={i}>
-                    <p className="text-xs dark:text-white text-gray-400">{spec.label}</p>
-                    <p className="text-sm mt-1 dark:text-white">{value || "—"}</p>
+                    <p className="text-xs dark:text-white text-gray-400">
+                      {spec.label}
+                    </p>
+                    <p className="text-sm mt-1 dark:text-white">
+                      {value || "—"}
+                    </p>
                   </div>
                 ))}
               </div>

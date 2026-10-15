@@ -53,7 +53,7 @@ function Login() {
 
       <div className="w-full md:w-1/2 max-w-96 mx-auto md:mx-0 px-2 sm:px-4">
         <h1 className="text-2xl sm:text-3xl font-semibold tracking-wide text-black mb-3">
-          Log in to Exclusive
+          Log in to Mixel
         </h1>
         <p className="text-sm text-black mb-8 md:mb-10">
           Enter your details below
@@ -65,7 +65,7 @@ function Login() {
             LoginPage()
           }}
           className="flex flex-col gap-6 md:gap-8"
-        >
+        >                                                                                                                                                                                    
           <input
             value={username}
             onChange={(e) => {

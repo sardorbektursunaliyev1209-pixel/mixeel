@@ -1,16 +1,17 @@
-import rasm1 from "../../../public/PopularCategories/rasm1.png";
-import rasm2 from "../../../public/PopularCategories/rasm2.png";
-import rasm3 from "../../../public/PopularCategories/rasm3.png";
-import rasm4 from "../../../public/PopularCategories/rasm4.png";
-
-const categories = [
-  { title: "Компьютеры", img: rasm1 },
-  { title: "Телефоны, планшеты", img: rasm2 },
-  { title: "Ноутбуки", img: rasm3 },
-  { title: "Товары для офиса", img: rasm4 },
-];
+import { useEffect, useState } from "react";
+import { getCategories } from "../../Sevices/App";
+import { Link } from "react-router-dom";
 
 function PopularCategories() {
+  const [categories, setCategories] = useState([]);
+  const id = 2;
+  useEffect(() => {
+    getCategories().then((data) => {
+      console.log(data);
+      setCategories(data.results ?? data);
+    })
+  }, []);
+  
   return (
     <div className="PopularCategories bg-white py-6 dark:bg-gray-900 md:py-0">
       <div className="container_1200 px-4">
@@ -19,24 +20,26 @@ function PopularCategories() {
         </h2>
 
         <div
-          className="mt-5 flex items-center gap-4 overflow-x-auto md:mt-[28px] lg:justify-center
-                     [-ms-overflow-style:none] [scrollbar-width:none]
+          className="mt-5 flex  items-center md:mt-[28px] lg:justify-between
+                     [-ms-overflow-style:none] scrollbar-none
                      [&::-webkit-scrollbar]:hidden"
         >
-          {categories.map(({ title, img }) => (
-            <div
-              key={title}
-              className="flex shrink-0 cursor-pointer items-center gap-3 md:gap-5"
+          {categories.slice(0, 4).map((item) => (
+            <Link to={`/Deteil/${item.id}`}
+              key={item.id}
+              className="flex cursor-pointer items-center justify-between  md:gap-5"
             >
-              <span className="max-w-[110px] text-base leading-tight dark:text-white md:max-w-[140px] md:text-[20px]">
-                {title}
-              </span>
+              <div className="flex items-center gap-5">
+                <h3 className="text-base leading-tight dark:text-white md:max-w-[140px] md:text-[20px]">
+                {item.name}
+              </h3>
               <img
-                src={img}
-                alt={title}
-                className="h-24 w-24 object-contain md:h-35 md:w-35"
+                src={item.image}
+                alt={item.name}
+                className="h-20 w-20 object-contain"
               />
             </div>
+              </Link>
           ))}
         </div>
       </div>

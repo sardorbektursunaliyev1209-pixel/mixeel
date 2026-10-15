@@ -1,11 +1,22 @@
 import { MdShoppingCart, MdFavorite } from "react-icons/md";
 import { LuScale } from "react-icons/lu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { getToken } from "../../Sevices/Token";
+const card = "group relative flex flex-col overflow-hidden rounded-lg border border-neutral-200 dark:border-gray-700 bg-white text-center transition-all duration-300 dark:bg-gray-900 before:absolute before:inset-x-0 before:top-0 before:z-10 before:h-[3px] before:origin-left before:scale-x-0 before:bg-gradient-to-r before:from-[#E8382D] before:to-orange-400 before:transition-transform before:duration-500 hover:border-[#E8382D]/40 hover:shadow-[0_22px_44px_-14px_rgba(232,56,45,0.45)] hover:before:scale-x-100 motion-safe:hover:-translate-y-1.5";
+export default function ProductCard({ product , wishlist,toggleWishlist,toggleCompare ,addToCart}) {
+  const isLike = wishlist.some((item)=>item.id=== product.id)
+const navigate  = useNavigate()
 
-const card =
-  "group relative flex flex-col overflow-hidden rounded-lg border border-neutral-200 dark:border-gray-700 bg-white text-center transition-all duration-300 dark:bg-gray-900 before:absolute before:inset-x-0 before:top-0 before:z-10 before:h-[3px] before:origin-left before:scale-x-0 before:bg-gradient-to-r before:from-[#E8382D] before:to-orange-400 before:transition-transform before:duration-500 hover:border-[#E8382D]/40 hover:shadow-[0_22px_44px_-14px_rgba(232,56,45,0.45)] hover:before:scale-x-100 motion-safe:hover:-translate-y-1.5";
 
-export default function ProductCard({ product }) {
+const handleCart  = (()=>{
+
+  if (!getToken) {
+navigate("/SingUp")
+    
+  }else{
+addToCart(product)
+  }
+})
   return (
     <article className={card} id="">
       <Link to={`/deteil/${product.id}`} className="contents">
@@ -13,11 +24,10 @@ export default function ProductCard({ product }) {
           <img
             src={product.main_image}
             alt={product.name}
-            loading="lazy"
+            loading="lazy"  
             className="h-[110px] w-full object-contain mix-blend-multiply transition-transform duration-500 motion-safe:group-hover:scale-110"
           />
         </div>
-
         <p className="mt-6 text-[15px] font-semibold text-[#E8382D] dark:text-red-600">
           {product.price} сум/мес
         </p>
@@ -29,21 +39,27 @@ export default function ProductCard({ product }) {
         </h3>
       </Link>
       <div className="mt-5 flex border-t dark:border-gray-700 border-neutral-200">
-        <button
+        <button 
+        onClick={()=>handleCart()}
           type="button"
           aria-label="В корзину"
           className="flex flex-1 justify-center py-4 text-neutral-400 transition-colors duration-300 group-hover:bg-[#E8382D] group-hover:text-white active:scale-95"
         >
+
+       
           <MdShoppingCart className="h-6 w-6 dark:text-white " />
         </button>
         <button
+        onClick={()=>toggleWishlist(product)}
+
           type="button"
           aria-label="В избранное"
           className="flex flex-1 justify-center border-x dark:border-gray-700 border-neutral-200 py-4 text-neutral-400 transition dark:hover:bg-gray-800 hover:bg-red-50 hover:text-[#E8382D] active:scale-95"
         >
-          <MdFavorite className="h-6 w-6 dark:text-white" />
+           <MdFavorite className={`h-6 w-6 ${isLike ? "text-[#E8382D]" : "dark:text-white"}` } />
         </button>
         <button
+        onClick={()=>toggleCompare(product)}
           type="button"
           aria-label="Сравнить"
           className="flex flex-1 justify-center py-4 text-neutral-400 transition dark:hover:bg-gray-800 hover:bg-neutral-100 hover:text-neutral-900 active:scale-95"

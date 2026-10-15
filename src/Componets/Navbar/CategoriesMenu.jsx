@@ -79,7 +79,6 @@ export function CategoriesMenu({ onLinkClick }) {
 
   return (
     <div className={wrapper}>
-      {/* Mobile */}
       <div className="container_1200 px-4 py-2 lg:hidden">
         {categories.map((item) => {
           const isOpen = openId === item.id;

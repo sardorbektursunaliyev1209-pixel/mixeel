@@ -5,7 +5,7 @@ import ProductCard from "../../../../Componets/ProductCard/ProductCard";
 import CardsSkeletonList from "../../../../Componets/CardSelekton/SelektonList";
 
 
-export default function Recomend({ products = [], loading }) {
+export default function Recomend({ products = [], loading ,toggleWishlist,wishlist,addToCart,toggleCompare}) {
   return (
     <div className="Recomend bg-white py-6 dark:bg-gray-900 md:py-8">
       <div className="container_1200 px-4">
@@ -43,7 +43,7 @@ export default function Recomend({ products = [], loading }) {
             loading ? <CardsSkeletonList/>:
             
             products.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p} toggleWishlist={toggleWishlist} wishlist={wishlist} toggleCompare={toggleCompare} addToCart={addToCart}/>
             ))}
           </div>
         </div>

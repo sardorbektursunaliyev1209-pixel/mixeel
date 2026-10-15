@@ -1,8 +1,10 @@
 import { HiOutlineArrowLongRight } from "react-icons/hi2";
 import ProductCard from "../../../../Componets/ProductCard/ProductCard";
 import CardSkeleton from "../../../../Componets/CardSelekton/CardSelekton";
+import { useState } from "react";
 
-export default function Gaget({ products,loading }) {
+export default function Gaget({ products, loading, wishlist, toggleWishlist ,addToCart,toggleCompare}) {
+  const [posmotr, setProsmotr] = useState(false);
   return (
     <section className="bg-white dark:bg-gray-900 font-[Montserrat,sans-serif] ">
       <div className="mx-auto max-w-[1200px] px-4 py-18 ">
@@ -11,6 +13,12 @@ export default function Gaget({ products,loading }) {
             Горящие предложения
           </h2>
           <a
+            onClick={(e) => {
+              e.preventDefault();
+              setProsmotr(true);
+            }}
+
+
             href="#"
             className="group flex items-center gap-2 text-[13px] font-light text-neutral-400 dark:text-gray-300 transition-colors hover:text-[#E8382D] dark:hover:text-[#E8382D]"
           >
@@ -20,7 +28,32 @@ export default function Gaget({ products,loading }) {
         </div>
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {loading ? (
+          {posmotr ? (
+            loading ? (
+              <>
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+              </>
+            ) : (
+              products.slice(0, 20).map((p) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  wishlist={wishlist}               
+                  toggleWishlist={toggleWishlist}   
+                  addToCart={addToCart}
+                  toggleCompare={toggleCompare}
+                />
+              ))
+            )
+          ) : loading ? (
             <>
               <CardSkeleton />
               <CardSkeleton />
@@ -28,13 +61,21 @@ export default function Gaget({ products,loading }) {
               <CardSkeleton />
               <CardSkeleton />
               <CardSkeleton />
-              <CardSkeleton /> 
               <CardSkeleton />
               <CardSkeleton />
-
+              <CardSkeleton />
             </>
           ) : (
-            products.map((p) => <ProductCard key={p.id} product={p} />)
+            products.slice(0, 10).map((p) => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                wishlist={wishlist}                 
+                toggleWishlist={toggleWishlist} 
+                addToCart={addToCart}
+                toggleCompare={toggleCompare}
+              />
+            ))
           )}
         </div>
       </div>

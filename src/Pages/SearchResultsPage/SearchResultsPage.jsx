@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import ProductCard from "../../Componets/ProductCard/ProductCard";
 import { getProducts } from "../../Sevices/App";
 
-function SearchResultsPage({searchResults}) {
-
-  
-
+function SearchResultsPage({
+  searchResults,
+  wishlist,
+  toggleWishlist,
+  addToCart,
+  toggleCompare,
+}) {
   return (
     <div className="dark:bg-gray-900">
       <div className="container_1200 pb-30">
@@ -15,19 +18,18 @@ function SearchResultsPage({searchResults}) {
           Результаты поиска
         </div>
 
-
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-           {
-
-            
-
-            searchResults?.map((p)=>
-            <ProductCard key={p.id} product={p}/>
-            
-            )
-
-           }
-          </div>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {searchResults?.map((p) => (
+            <ProductCard
+              key={p.id}
+              product={p}
+              toggleCompare={toggleCompare}
+              wishlist={wishlist}
+              toggleWishlist={toggleWishlist}
+              addToCart={addToCart}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

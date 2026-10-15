@@ -17,11 +17,49 @@ import Login from "./Pages/Home/Register/Login/Login";
 import { useEffect, useState } from "react";
 import { getProducts } from "./Sevices/App";
 import { Toaster } from "sonner";
+import Cart from "./Pages/Cart/Cart";
 function App() {
   const [products, setProducts] = useState([]);
   const [loading,setLoading]=useState(true)
   const [searchResults, setSearchResults] = useState([]);
+const [wishlist, setWishlist] = useState([]);
+const [cart,setCart]=useState([])
 
+const [compare,setCompare]=useState([])
+
+const toggleCompare  = ((product)=>{
+  const isCompared = compare.some((item)=>item.id === product.id)
+
+  if (isCompared) {
+    setCompare(compare.filter((item)=>item.id !== product.id))
+    
+  } else{
+    setCompare([...compare,product])
+  }
+
+})
+const addToCart =((product)=>{
+const exists = cart.some((item)=>item.id === product.id)  
+if (exists) {
+  setCart(
+    cart.map((item) =>
+      item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+    )
+
+  );
+}else{
+  setCart([...cart ,{...product ,quantity: 1}])
+}
+})
+const toggleWishlist = (product) => {
+  const exists = wishlist.some((item) => item.id === product.id);
+
+  if (exists) {
+    setWishlist(wishlist.filter((item) => item.id !== product.id));
+  } else {
+    setWishlist([...wishlist, product]);
+  }
+};
   const filterData = (text) => {
     const filtered = products.results.filter((item) =>
       item.name.toLowerCase().includes(text.toLowerCase()),
@@ -38,31 +76,31 @@ function App() {
   return (
     <>
     <Toaster position="top-center"  expand={false} richColors duration={2000}/>
-      <Navbar filterData={filterData} />
+      <Navbar filterData={filterData}  />
       <Routes>
         <Route
           path="/"
           element={
             <>
               <Hero />
-              <Home />
+              <Home   toggleWishlist={toggleWishlist}  wishlist={wishlist} addToCart={addToCart} toggleCompare={toggleCompare}/>
             </>
           }
         />
-        <Route path="/Checkout" element={<CheckoutPage />} />
-        <Route path="/category/:id" element={<ProductsPage />} />
+        <Route path="/Checkout" element={<CheckoutPage  cart={cart} loading={loading}/>} />
+        <Route path="/category/:id" element={<ProductsPage  toggleWishlist={toggleWishlist} toggleCompare={toggleCompare} wishlist={wishlist}  addToCart={addToCart} />} />
         <Route path="/Deteil/:id" element={<ProductDteil />} />
         <Route
           path="/search"
-          element={<SearchResultsPage searchResults={searchResults} />}
+          element={<SearchResultsPage searchResults={searchResults} toggleCompare={toggleCompare}  toggleWishlist={toggleWishlist} wishlist={wishlist} addToCart={addToCart}  />}
         />
         <Route path="/info" element={<InfoPage />} />
-        <Route path="/ComparePage" element={<ComparePage products={products } />} />
-        <Route path="/Wishlist" element={<Wishlist products={products } loading={loading} />}  />
+        <Route path="/ComparePage" element={<ComparePage compere={compare} products={products } toggleCompare={toggleCompare} wishlist={wishlist} toggleWishlist={toggleWishlist} addToCart={addToCart}/>} />
+        <Route path="/Wishlist" element={<Wishlist products={products } toggleCompare={toggleCompare} loading={loading} toggleWishlist={toggleWishlist}  wishlist={wishlist} addToCart={addToCart}/>}  />
         <Route path="/SingUp" element={<SingUp />} />
 
         <Route path="/Login" element={<Login />} />
-      </Routes>
+<Route path="/Cart" element={<Cart cart={cart} wishlist={wishlist} toggleCompare={toggleCompare}  toggleWishlist={toggleWishlist} addToCart={addToCart} />} />      </Routes>
       <AuthModal />
       <Footer />
     </>

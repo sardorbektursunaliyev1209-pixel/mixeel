@@ -81,7 +81,7 @@ const tags = [
 const card =
   "group relative flex w-full flex-col overflow-hidden rounded-lg border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-center transition-all duration-300 before:absolute before:inset-x-0 before:top-0 before:z-10 before:h-[3px] before:origin-left before:scale-x-0 before:bg-gradient-to-r before:from-[#E8382D] before:to-orange-400 before:transition-transform before:duration-500 hover:border-[#E8382D]/40 hover:shadow-[0_22px_44px_-14px_rgba(232,56,45,0.45)] hover:before:scale-x-100 motion-safe:hover:-translate-y-1.5";
 
-function ProductsPage() {
+function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
   const [minPrice, setMinPrice] = useState(300000);
   const [maxPrice, setMaxPrice] = useState(103300000);
 
@@ -420,7 +420,7 @@ function ProductsPage() {
                 }
               >
                 {filteredProducts.map((p) => (
-                  <ProductCard key={p.id} product={p} viewMode={viewMode} />
+                  <ProductCard key={p.id} product={p} viewMode={viewMode} wishlist={wishlist} toggleWishlist={toggleWishlist} />
                 ))}
               </div>
             )}
@@ -520,9 +520,9 @@ function ProductsPage() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-3">
-                    {filteredProducts.slice(0,6).map((p) => (
-                      <ProductCard key={p.id} product={p} />
-                    ))}
+                      {filteredProducts.slice(0,6).map((p) => (
+                        <ProductCard key={p.id} product={p} wishlist={wishlist} toggleCompare={toggleCompare} toggleWishlist={toggleWishlist} addToCart={addToCart}/>
+                      ))}
                   </div>
                 </div>
               </>

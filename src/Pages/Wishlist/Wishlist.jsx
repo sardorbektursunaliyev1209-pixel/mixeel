@@ -2,8 +2,14 @@ import { FaAngleRight } from "react-icons/fa";
 import ProductCard from "../../Componets/ProductCard/ProductCard";
 import CardSkeleton from "../../Componets/CardSelekton/CardSelekton";
 
-
-function Wishlist({ products ,loading}) {
+function Wishlist({
+  products,
+  loading,
+  toggleWishlist,
+  wishlist,
+  addToCart,
+  toggleCompare,
+}) {
   console.log("wishlist products:", products);
   return (
     <>
@@ -20,22 +26,31 @@ function Wishlist({ products ,loading}) {
           </div>
           <h1 className="text-[20px] text-black dark:text-white">Избранное</h1>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 py-5">
-                  {loading ? (
-                    <>
-                      <CardSkeleton />
-                      <CardSkeleton />
-                      <CardSkeleton />
-                      <CardSkeleton />
-                      <CardSkeleton />
-                      <CardSkeleton />
-                      <CardSkeleton /> 
-                      <CardSkeleton />
-                      <CardSkeleton />
-                    </>
-                  ) : (
-                    products.results.map((p) => <ProductCard key={p.id} product={p} />)
-                  )}
-                </div>
+            {loading ? (
+              <>
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+              </>
+            ) : (
+              wishlist.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  toggleCompare={toggleCompare}
+                  wishlist={wishlist}
+                  toggleWishlist={toggleWishlist}
+                  addToCart={addToCart}
+                />
+              ))
+            )}
+          </div>
         </div>
       </div>
     </>

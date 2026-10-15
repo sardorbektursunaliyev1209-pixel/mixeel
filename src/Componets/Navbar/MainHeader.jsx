@@ -12,11 +12,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { CiDark } from "react-icons/ci";
 import { MdOutlineLightMode } from "react-icons/md";
-
 export function MainHeader({filterData}) {
-  
   const [isDark, setIsDark] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useNavigate();2
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
   }, [isDark]);
@@ -38,7 +36,7 @@ export function MainHeader({filterData}) {
             <span className="text-[10px]">Войти</span>
           </button>
 
-          <button
+          <button 
             type="button"
             aria-label="Корзина"
             className="relative flex flex-col items-center gap-0.5 transition-colors hover:text-[#ed3a2d] cursor-pointer"
@@ -65,7 +63,6 @@ export function MainHeader({filterData}) {
               size={16}
             />
           </div>
-
           <form className="flex h-full min-w-0 flex-1 items-center">
             <input
               onChange={(e) => {
@@ -77,12 +74,10 @@ export function MainHeader({filterData}) {
               placeholder="Телефоны и бытовая"
               className="h-full min-w-0 flex-1 bg-transparent px-2 text-xs text-gray-800 outline-none placeholder:text-gray-400 dark:text-gray-200 sm:px-3 sm:text-sm md:px-4"
             />
-
             <IoMicOutline
               size={18}
               className="mr-2 shrink-0 cursor-pointer text-gray-400 sm:mr-3"
             />
-
             <button
               type="submit"
               aria-label="Поиск"
@@ -95,8 +90,6 @@ export function MainHeader({filterData}) {
         </div>
 
         <div className="hidden items-center gap-5 text-sm text-gray-900 dark:text-gray-200 lg:flex xl:gap-8">
-        
-        
           <Link 
             to={"/SingUp"}
             type="button"
@@ -105,7 +98,6 @@ export function MainHeader({filterData}) {
             <IoPersonOutline size={24} />
             <span>Войти</span>
           </Link>
-
           <Link
             to="/ComparePage"
             className="flex flex-col items-center gap-1 transition-colors hover:text-[#ed3a2d]"
@@ -122,13 +114,13 @@ export function MainHeader({filterData}) {
             <span>Избранное</span>
           </Link>
 
-          <button
+          <Link to={"/Cart"}
             type="button"
             className="flex flex-col items-center gap-1 transition-colors hover:text-[#ed3a2d]"
           >
             <IoCartOutline size={24} />
             <span>Корзина</span>
-          </button>
+          </Link>
 
           <button
             type="button"
@@ -146,8 +138,8 @@ export function MainHeader({filterData}) {
             aria-label="Сравнение"
             className="hover:text-[#ed3a2d]"
           >
-            <LuScale size={23} />
-          </Link>
+            <LuScale size={23} /> 
+           </Link>
           <Link
             to="/Wishlist"
             aria-label="Избранное"

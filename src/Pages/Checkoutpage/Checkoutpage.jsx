@@ -1,20 +1,5 @@
 import { useState } from "react";
 
-const orderItems = [
-  {
-    image: "/imgs/Card1.png",
-    name: "Galaxy A03 Core 2/32Gb Black",
-    qty: 1,
-    price: "1 334 000",
-  },
-  {
-    image: "/imgs/Card1.png",
-    name: "Galaxy A03 Core 2/32Gb Black",
-    qty: 1,
-    price: "1 334 000",
-  },
-];
-
 const paymentMethods = [
   { id: "payme", label: "Оплата через Payme" },
   { id: "card", label: "Онлайн оплата по карте UZCARD и HUMO" },
@@ -23,7 +8,7 @@ const paymentMethods = [
   { id: "installment", label: "Рассрочка" },
 ];
 
-function CheckoutPage({cart}) {
+function CheckoutPage({ cart }) {
   const [phone, setPhone] = useState("+998) 99 123 45 67");
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("Tojmazarov");
@@ -41,8 +26,8 @@ function CheckoutPage({cart}) {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 transition-colors duration-300 dark:bg-gray-900 dark:text-white">
-      <div className="container_1200 px-4 py-6">
-        <div className="text-sm text-gray-400">
+      <div className="container_1200 px-4 py-4 md:py-6">
+        <div className="flex flex-wrap items-center text-sm text-gray-400">
           <a href="/" className="transition-colors hover:text-[#ed3a2d]">
             Главная
           </a>
@@ -50,12 +35,12 @@ function CheckoutPage({cart}) {
           Оформить покупку
         </div>
 
-        <h1 className="mt-4 text-2xl font-semibold text-gray-900 dark:text-white">
+        <h1 className="mt-4 text-xl font-semibold text-gray-900 dark:text-white md:text-2xl">
           Оформить покупку
         </h1>
 
-        <div className="mt-6 flex items-start gap-10 max-lg:flex-col">
-          <div className="flex flex-1 flex-col gap-8 max-lg:w-full">
+        <div className="mt-4 flex items-start gap-6 md:mt-6 lg:gap-10 max-lg:flex-col">
+          <div className="flex flex-1 flex-col gap-6 md:gap-8 max-lg:w-full">
             <section>
               <h2 className={headingClass}>
                 <span className={stepClass}>1</span>
@@ -64,12 +49,10 @@ function CheckoutPage({cart}) {
 
               <div className="flex flex-col gap-3">
                 <div>
-                  <label className="text-xs text-gray-400">
-                    Телефон*
-                  </label>
+                  <label className="text-xs text-gray-400">Телефон*</label>
 
                   <input
-                    type="text"
+                    type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className={`${inputClass} border-[#ed3a2d]`}
@@ -78,9 +61,7 @@ function CheckoutPage({cart}) {
 
                 <div className="flex gap-3 max-sm:flex-col">
                   <div className="flex-1">
-                    <label className="text-xs text-gray-400">
-                      Имя*
-                    </label>
+                    <label className="text-xs text-gray-400">Имя*</label>
 
                     <input
                       type="text"
@@ -92,9 +73,7 @@ function CheckoutPage({cart}) {
                   </div>
 
                   <div className="flex-1">
-                    <label className="text-xs text-gray-400">
-                      Фамилия*
-                    </label>
+                    <label className="text-xs text-gray-400">Фамилия*</label>
 
                     <input
                       type="text"
@@ -123,11 +102,11 @@ function CheckoutPage({cart}) {
                 </button>
               </div>
 
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3 sm:gap-4">
                 {cart.map((item, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-4 rounded-lg border border-transparent p-2 transition-colors hover:border-gray-200 dark:hover:border-gray-700 max-sm:gap-2"
+                    className="flex items-center gap-3 rounded-lg border border-transparent p-2 transition-colors hover:border-gray-200 dark:hover:border-gray-700 sm:gap-4"
                   >
                     <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-md border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
                       <img
@@ -137,17 +116,19 @@ function CheckoutPage({cart}) {
                       />
                     </div>
 
-                    <p className="flex-1 text-sm text-gray-900 dark:text-white">
+                    <p className="min-w-0 flex-1 break-words text-sm text-gray-900 dark:text-white">
                       {item.name}
                     </p>
 
-                    <span className="whitespace-nowrap text-sm text-gray-400">
-                      {item.qty} шт
-                    </span>
+                    <div className="flex shrink-0 flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-4">
+                      <span className="whitespace-nowrap text-sm text-gray-400">
+                        {item.qty} шт
+                      </span>
 
-                    <span className="whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                      {item.price} сум
-                    </span>
+                      <span className="whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                        {item.price} сум
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -189,25 +170,24 @@ function CheckoutPage({cart}) {
                       )}
                     </span>
 
-                    <span className="text-sm text-gray-900 dark:text-white">
+                    <span className="min-w-0 text-sm text-gray-900 dark:text-white">
                       {method.label}
                     </span>
                   </label>
                 ))}
               </div>
             </section>
+
             <section>
               <h2 className={headingClass}>
                 <span className={stepClass}>4</span>
                 Способ получения
               </h2>
 
-              <p className="mb-2 text-xs text-gray-400">
-                Ваш город
-              </p>
+              <p className="mb-2 text-xs text-gray-400">Ваш город</p>
 
               <label
-                className={`flex w-fit cursor-pointer items-center gap-3 rounded-md border px-4 py-3 transition-colors ${
+                className={`flex w-full cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 rounded-md border px-4 py-3 transition-colors sm:w-fit ${
                   city === "tashkent"
                     ? "border-[#ed3a2d] bg-red-50 dark:bg-red-950/30"
                     : "border-gray-200 dark:border-gray-700"
@@ -237,12 +217,10 @@ function CheckoutPage({cart}) {
                   Ташкент
                 </span>
 
-                <span className="text-xs text-gray-400">
-                  Доставка Fazo
-                </span>
+                <span className="text-xs text-gray-400">Доставка Fazo</span>
               </label>
 
-              <p className="mb-2 mt-6 text-xs text-gray-400">
+              <p className="mb-2 mt-5 text-xs text-gray-400 md:mt-6">
                 Укажите адрес доставки
               </p>
 
@@ -274,9 +252,7 @@ function CheckoutPage({cart}) {
 
               <div className="mt-3 flex gap-3 max-sm:flex-col">
                 <div className="flex-[2]">
-                  <label className="text-xs text-gray-400">
-                    Адрес
-                  </label>
+                  <label className="text-xs text-gray-400">Адрес</label>
 
                   <input
                     type="text"
@@ -286,18 +262,14 @@ function CheckoutPage({cart}) {
                 </div>
 
                 <div className="flex-1">
-                  <label className="text-xs text-gray-400">
-                    Этаж
-                  </label>
+                  <label className="text-xs text-gray-400">Этаж</label>
 
                   <input type="text" className={inputClass} />
                 </div>
               </div>
 
               <div className="mt-3">
-                <label className="text-xs text-gray-400">
-                  Дата доставки
-                </label>
+                <label className="text-xs text-gray-400">Дата доставки</label>
 
                 <input type="date" className={inputClass} />
               </div>
@@ -306,14 +278,14 @@ function CheckoutPage({cart}) {
 
           {/* O'ng tomon — buyurtma xulosasi */}
           <aside className="sticky top-6 w-[300px] shrink-0 max-lg:static max-lg:w-full">
-            <div className="rounded-lg border border-gray-200 bg-white p-5 transition-colors dark:border-gray-700 dark:bg-gray-800">
+            <div className="rounded-lg border border-gray-200 bg-white p-4 transition-colors dark:border-gray-700 dark:bg-gray-800 md:p-5">
               <h3 className="mb-3 text-sm font-medium text-gray-900 dark:text-white">
                 Ваши данные
               </h3>
 
               <div className="mb-2 flex justify-between gap-3 text-sm">
                 <span className="text-gray-400">
-                  {orderItems.length} товара на сумму
+                  {cart.length} товара на сумму
                 </span>
 
                 <span className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
@@ -322,9 +294,7 @@ function CheckoutPage({cart}) {
               </div>
 
               <div className="mb-4 flex justify-between border-b border-gray-100 pb-4 text-sm dark:border-gray-700">
-                <span className="text-gray-400">
-                  Доставка
-                </span>
+                <span className="text-gray-400">Доставка</span>
 
                 <span className="font-medium text-gray-900 dark:text-white">
                   бесплатно
@@ -332,9 +302,7 @@ function CheckoutPage({cart}) {
               </div>
 
               <div className="mb-4 flex justify-between gap-3 text-sm">
-                <span className="text-gray-400">
-                  Всего к оплате
-                </span>
+                <span className="text-gray-400">Всего к оплате</span>
 
                 <span className="whitespace-nowrap font-bold text-gray-900 dark:text-white">
                   5 262 000 сум
@@ -350,10 +318,7 @@ function CheckoutPage({cart}) {
 
               <p className="mt-3 text-[11px] leading-relaxed text-gray-400">
                 Подтверждая заказ, я принимаю условия{" "}
-                <a
-                  href="#"
-                  className="text-[#ed3a2d] hover:underline"
-                >
+                <a href="#" className="text-[#ed3a2d] hover:underline">
                   Пользовательского соглашения
                 </a>
               </p>

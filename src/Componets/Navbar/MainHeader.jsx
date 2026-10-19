@@ -12,12 +12,28 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { CiDark } from "react-icons/ci";
 import { MdOutlineLightMode } from "react-icons/md";
-export function MainHeader({filterData}) {
-  const [isDark, setIsDark] = useState(false);
-  const navigate = useNavigate();2
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", isDark);
-  }, [isDark]);
+import { getToken, removeToken } from "../../Sevices/Token";
+import { ImExit } from "react-icons/im";
+
+export function MainHeader({ filterData }) {
+const [isDark, setIsDark] = useState(() => {
+  return localStorage.getItem("theme") === "dark";
+});  const navigate = useNavigate();
+useEffect(() => {
+  document.documentElement.classList.toggle("dark", isDark);
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+}, [isDark]);
+  const isLoggedIn = !!getToken();
+
+  const handleLogout = () => {
+    removeToken();
+    navigate("/SingUp");
+  };
+
+  const toggleTheme = () => setIsDark((d) => !d);
+
+  const iconBtn =
+    "cursor-pointer transition-colors hover:text-[#ed3a2d] active:text-[#ed3a2d]";
 
   return (
     <header className="MainHerader bg-white py-3 transition-colors duration-300 dark:bg-gray-900 md:py-4">
@@ -26,35 +42,45 @@ export function MainHeader({filterData}) {
           <Logo />
         </Link>
 
+        {/* Mobil tugmalar (md dan kichik) */}
         <div className="flex items-center gap-4 text-gray-900 dark:text-gray-200 md:hidden">
+          <Link to="/ComparePage" aria-label="Сравнение" className={iconBtn}>
+            <LuScale size={23} />
+          </Link>
+
+          <Link to="/Wishlist" aria-label="Избранное" className={iconBtn}>
+            <IoHeartOutline size={24} />
+          </Link>
+
+          <Link to="/Cart" aria-label="Корзина" className={iconBtn}>
+            <IoCartOutline size={25} />
+          </Link>
+
+          {isLoggedIn ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              aria-label="Выход"
+              className={iconBtn}
+            >
+              <ImExit size={23} />
+            </button>
+          ) : (
+            <Link to="/SingUp" aria-label="Войти" className={iconBtn}>
+              <IoPersonOutline size={24} />
+            </Link>
+          )}
+
           <button
             type="button"
-            aria-label="Войти"
-            className="flex flex-col items-center gap-0.5 transition-colors hover:text-[#ed3a2d] cursor-pointer"
-          >
-            <IoPersonOutline size={23} />
-            <span className="text-[10px]">Войти</span>
-          </button>
-
-          <button 
-            type="button"
-            aria-label="Корзина"
-            className="relative flex flex-col items-center gap-0.5 transition-colors hover:text-[#ed3a2d] cursor-pointer"
-          >
-            <IoCartOutline size={24} />
-            <span className="text-[10px]">Корзина</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setIsDark(!isDark)}
+            onClick={toggleTheme}
             aria-label="Переключить тему"
-            className="flex flex-col items-center gap-0.5 transition-colors hover:text-[#ed3a2d] cursor-pointer"
+            className={iconBtn}
           >
             {isDark ? <MdOutlineLightMode size={23} /> : <CiDark size={23} />}
-            <span className="text-[10px]">{isDark ? "Light" : "Dark"}</span>
           </button>
         </div>
+
         <div className="order-2 flex h-[42px] w-full overflow-hidden rounded-md border border-[#ed3a2d] bg-white dark:bg-gray-800 md:order-none md:w-auto md:max-w-[600px] md:flex-1 lg:mx-5">
           <div className="flex h-full shrink-0 cursor-pointer items-center gap-1 border-r border-gray-300 px-2 text-[11px] text-gray-700 dark:border-gray-600 dark:text-gray-200 sm:px-3 sm:text-xs md:gap-1 md:px-4 md:text-sm">
             <span className="whitespace-nowrap">Все категории</span>
@@ -63,16 +89,21 @@ export function MainHeader({filterData}) {
               size={16}
             />
           </div>
-          <form className="flex h-full min-w-0 flex-1 items-center">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              navigate("/search");
+            }}
+            className="flex h-full min-w-0 flex-1 items-center"
+          >
             <input
               onChange={(e) => {
-                const value = e.target.value;
-                filterData(value);
-                 navigate("/search")
+                filterData(e.target.value);
+                navigate("/search");
               }}
               type="text"
               placeholder="Телефоны и бытовая"
-              className="h-full min-w-0 flex-1 bg-transparent px-2 text-xs text-gray-800 outline-none placeholder:text-gray-400 dark:text-gray-200 sm:px-3 sm:text-sm md:px-4"
+              className="h-full min-w-0 flex-1 bg-transparent px-2 text-base text-gray-800 outline-none placeholder:text-gray-400 dark:text-gray-200 sm:px-3 md:px-4 md:text-sm"
             />
             <IoMicOutline
               size={18}
@@ -90,14 +121,25 @@ export function MainHeader({filterData}) {
         </div>
 
         <div className="hidden items-center gap-5 text-sm text-gray-900 dark:text-gray-200 lg:flex xl:gap-8">
-          <Link 
-            to={"/SingUp"}
-            type="button"
-            className="flex cursor-pointer flex-col items-center gap-1 transition-colors hover:text-[#ed3a2d]"
-          >
-            <IoPersonOutline size={24} />
-            <span>Войти</span>
-          </Link>
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              type="button"
+              className="flex cursor-pointer flex-col items-center gap-1 transition-colors hover:text-[#ed3a2d]"
+            >
+              <ImExit size={24} />
+              <span>Выход</span>
+            </button>
+          ) : (
+            <Link
+              to="/SingUp"
+              className="flex cursor-pointer flex-col items-center gap-1 transition-colors hover:text-[#ed3a2d]"
+            >
+              <IoPersonOutline size={24} />
+              <span>Войти</span>
+            </Link>
+          )}
+
           <Link
             to="/ComparePage"
             className="flex flex-col items-center gap-1 transition-colors hover:text-[#ed3a2d]"
@@ -114,8 +156,8 @@ export function MainHeader({filterData}) {
             <span>Избранное</span>
           </Link>
 
-          <Link to={"/Cart"}
-            type="button"
+          <Link
+            to="/Cart"
             className="flex flex-col items-center gap-1 transition-colors hover:text-[#ed3a2d]"
           >
             <IoCartOutline size={24} />
@@ -124,7 +166,7 @@ export function MainHeader({filterData}) {
 
           <button
             type="button"
-            onClick={() => setIsDark(!isDark)}
+            onClick={toggleTheme}
             className="flex cursor-pointer flex-col items-center gap-1 transition-colors hover:text-[#ed3a2d]"
           >
             {isDark ? <MdOutlineLightMode size={24} /> : <CiDark size={24} />}
@@ -133,25 +175,38 @@ export function MainHeader({filterData}) {
         </div>
 
         <div className="hidden items-center gap-4 text-gray-900 dark:text-gray-200 md:flex lg:hidden">
-          <Link
-            to="/ComparePage"
-            aria-label="Сравнение"
-            className="hover:text-[#ed3a2d]"
-          >
-            <LuScale size={23} /> 
-           </Link>
-          <Link
-            to="/Wishlist"
-            aria-label="Избранное"
-            className="hover:text-[#ed3a2d]"
-          >
+          <Link to="/ComparePage" aria-label="Сравнение" className={iconBtn}>
+            <LuScale size={23} />
+          </Link>
+
+          <Link to="/Wishlist" aria-label="Избранное" className={iconBtn}>
             <IoHeartOutline size={23} />
           </Link>
+
+          <Link to="/Cart" aria-label="Корзина" className={iconBtn}>
+            <IoCartOutline size={24} />
+          </Link>
+
+          {isLoggedIn ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              aria-label="Выход"
+              className={iconBtn}
+            >
+              <ImExit size={23} />
+            </button>
+          ) : (
+            <Link to="/SingUp" aria-label="Войти" className={iconBtn}>
+              <IoPersonOutline size={23} />
+            </Link>
+          )}
+
           <button
             type="button"
-            onClick={() => setIsDark(!isDark)}
+            onClick={toggleTheme}
             aria-label="Переключить тему"
-            className="hover:text-[#ed3a2d]"
+            className={iconBtn}
           >
             {isDark ? <MdOutlineLightMode size={23} /> : <CiDark size={23} />}
           </button>

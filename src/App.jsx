@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import AuthModal from "./Componets/AuthModal/AuthModal";
 import { Footer } from "./Componets/Footer/Footer";
 import { Hero } from "./Componets/Hero/Hero";
@@ -18,7 +18,9 @@ import { useEffect, useState } from "react";
 import { getProducts } from "./Sevices/App";
 import { Toaster } from "sonner";
 import Cart from "./Pages/Cart/Cart";
+import { getToken } from "./Sevices/Token";
 function App() {
+  const location = useLocation()
   const [products, setProducts] = useState([]);
   const [loading,setLoading]=useState(true)
   const [searchResults, setSearchResults] = useState([]);
@@ -37,6 +39,7 @@ const toggleCompare  = ((product)=>{
     setCompare([...compare,product])
   }
 
+  
 })
 const addToCart =((product)=>{
 const exists = cart.some((item)=>item.id === product.id)  
@@ -73,6 +76,21 @@ const toggleWishlist = (product) => {
     });
 
   }, []);
+ useEffect(() => {
+  if (!getToken()) return;
+
+  const pending = localStorage.getItem("pendingWishlist");
+  if (!pending) return;
+
+  const product = JSON.parse(pending);
+  localStorage.removeItem("pendingWishlist");
+
+  const exists = wishlist.some((item) => item.id === product.id);
+  if (!exists) {
+    toggleWishlist(product);
+  }
+  
+}, [location]);
   return (
     <>
     <Toaster position="top-center"  expand={false} richColors duration={2000}/>

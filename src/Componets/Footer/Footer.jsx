@@ -75,7 +75,6 @@ export function Footer() {
             ))}
           </div>
         </div>
-
         <div className="grid w-full grid-cols-1 gap-8 sm:grid-cols-2 lg:flex lg:w-auto lg:gap-20">
           {columns.map((col) => (
             <div

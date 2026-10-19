@@ -1,57 +1,16 @@
 import { useEffect, useState } from "react";
 import { FaAngleRight } from "react-icons/fa";
 import { GoChevronUp, GoChevronRight } from "react-icons/go";
-import { LuScale } from "react-icons/lu";
 import {
   MdChevronLeft,
   MdFilterList,
   MdGridView,
   MdViewList,
-  MdShoppingCart,
-  MdFavorite,
 } from "react-icons/md";
 import { HiOutlineArrowLongRight } from "react-icons/hi2";
 import { GrMoney } from "react-icons/gr";
 import { PostProductsFilter } from "../../Sevices/Products";
 import ProductCard from "../../Componets/ProductCard/ProductCard";
-
-const cheaperProducts = [
-  {
-    image: "/imgs/Card9.png",
-    line1: "Умные часы Haylou",
-    line2: "RT-LS05S",
-    price: "458 000",
-    oldPrice: "529 000",
-  },
-  {
-    image: "/imgs/Card8.png",
-    line1: "Наушники Panasonic",
-    line2: "RP-HJE125E-R",
-    price: "18 000",
-    oldPrice: "99 000",
-  },
-  {
-    image: "/imgs/Card7.png",
-    line1: "Iphone 13 pro 256 Gb",
-    line2: "",
-    price: "9 525 000",
-    oldPrice: "10 520 000",
-  },
-  {
-    image: "/imgs/Card6.png",
-    line1: "Источник бесперебойного",
-    line2: "питания AVT 600 AVR (EA260)",
-    price: "600 000",
-    oldPrice: "909 000",
-  },
-  {
-    image: "/imgs/Card1.png",
-    line1: "Беспроводная мышь",
-    line2: "Logitech M220 SILENT",
-    price: "130 000",
-    oldPrice: "200 000",
-  },
-];
 
 const brands = [
   { name: "LG", count: 30 },
@@ -78,10 +37,7 @@ const tags = [
   "Смартфоны",
 ];
 
-const card =
-  "group relative flex w-full flex-col overflow-hidden rounded-lg border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-center transition-all duration-300 before:absolute before:inset-x-0 before:top-0 before:z-10 before:h-[3px] before:origin-left before:scale-x-0 before:bg-gradient-to-r before:from-[#E8382D] before:to-orange-400 before:transition-transform before:duration-500 hover:border-[#E8382D]/40 hover:shadow-[0_22px_44px_-14px_rgba(232,56,45,0.45)] hover:before:scale-x-100 motion-safe:hover:-translate-y-1.5";
-
-function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
+function ProductsPage({ toggleWishlist, wishlist, addToCart, toggleCompare }) {
   const [minPrice, setMinPrice] = useState(300000);
   const [maxPrice, setMaxPrice] = useState(103300000);
 
@@ -90,6 +46,7 @@ function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
 
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [viewMode, setViewMode] = useState("grid");
+  const [showFilters, setShowFilters] = useState(false);
 
   const [activeTag, setActiveTag] = useState("Игровые");
 
@@ -143,6 +100,7 @@ function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
     setCurrentPage(1);
     setAppliedMinPrice(minPrice);
     setAppliedMaxPrice(maxPrice);
+    setShowFilters(false);
   };
 
   const handlePageChange = (page) => {
@@ -184,63 +142,79 @@ function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
 
   return (
     <div className="ProductsPage min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white">
-      <div className="container_1200 py-6">
-        <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center lg:gap-46">
-            <h1 className="text-[20px]">Смартфоны в Ташкенте</h1>
+      <div className="container_1200 px-4 py-4 md:px-0 md:py-6">
+        <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center lg:gap-46">
+            <h1 className="text-lg md:text-[20px]">Смартфоны в Ташкенте</h1>
 
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <button
                 type="button"
-                className="flex items-center gap-2 text-gray-500 transition hover:text-[#ed3a2d] dark:text-white"
+                className="flex items-center gap-2 text-sm text-gray-500 transition hover:text-[#ed3a2d] dark:text-white md:text-base"
               >
-                <GrMoney size={30} />
+                <GrMoney size={24} />
                 <span>По цене</span>
               </button>
 
               <button
                 type="button"
-                className="flex items-center gap-2 text-gray-500 transition hover:text-[#ed3a2d] dark:text-white"
+                className="flex items-center gap-2 text-sm text-gray-500 transition hover:text-[#ed3a2d] dark:text-white md:text-base"
               >
-                <MdFilterList size={30} />
+                <MdFilterList size={24} />
                 <span>По популярности</span>
               </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-2 lg:justify-end">
+            {/* Faqat mobil va planshetda */}
             <button
               type="button"
-              onClick={() => setViewMode("grid")}
-              aria-label="Сетка"
+              onClick={() => setShowFilters((s) => !s)}
+              className="flex items-center gap-2 rounded-md border border-gray-300 px-4 py-2 text-sm dark:border-gray-600 lg:hidden"
             >
-              <MdGridView
-                size={25}
-                color={viewMode === "grid" ? "#ed3a2d" : undefined}
-                className={
-                  viewMode === "grid" ? "" : "text-gray-500 dark:text-white"
-                }
-              />
+              <MdFilterList size={20} />
+              Фильтры
             </button>
 
-            <button
-              type="button"
-              onClick={() => setViewMode("list")}
-              aria-label="Список"
-            >
-              <MdViewList
-                size={25}
-                color={viewMode === "list" ? "#ed3a2d" : undefined}
-                className={
-                  viewMode === "list" ? "" : "text-gray-500 dark:text-white"
-                }
-              />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setViewMode("grid")}
+                aria-label="Сетка"
+              >
+                <MdGridView
+                  size={25}
+                  color={viewMode === "grid" ? "#ed3a2d" : undefined}
+                  className={
+                    viewMode === "grid" ? "" : "text-gray-500 dark:text-white"
+                  }
+                />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setViewMode("list")}
+                aria-label="Список"
+              >
+                <MdViewList
+                  size={25}
+                  color={viewMode === "list" ? "#ed3a2d" : undefined}
+                  className={
+                    viewMode === "list" ? "" : "text-gray-500 dark:text-white"
+                  }
+                />
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="mt-6 flex flex-col gap-10 lg:flex-row">
-          <aside className="left h-fit w-full rounded-lg border border-gray-200 bg-white px-[30px] py-[30px] dark:border-gray-700 dark:bg-gray-800 lg:w-[360px]">
+        <div className="mt-4 flex flex-col gap-6 md:mt-6 lg:flex-row lg:gap-10">
+          <aside
+            className={`left h-fit w-full rounded-lg border border-gray-200 bg-white px-4 py-5 dark:border-gray-700 dark:bg-gray-800 md:px-[30px] md:py-[30px] lg:block lg:w-[360px] lg:shrink-0 ${
+              showFilters ? "block" : "hidden"
+            }`}
+          >
             <div className="flex items-center justify-between">
               <h2 className="text-[16px]">Цена (сум)</h2>
               <GoChevronUp size={30} />
@@ -248,13 +222,13 @@ function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
 
             <div className="mt-5 flex">
               <div className="w-1/2 border border-gray-400 dark:border-gray-600">
-                <p className="py-[13px] text-center text-gray-400 dark:text-white">
+                <p className="py-[13px] text-center text-sm text-gray-400 dark:text-white md:text-base">
                   от {minPrice.toLocaleString()}
                 </p>
               </div>
 
               <div className="w-1/2 border border-gray-400 dark:border-gray-600">
-                <p className="py-[13px] text-center text-gray-400 dark:text-white">
+                <p className="py-[13px] text-center text-sm text-gray-400 dark:text-white md:text-base">
                   до {maxPrice.toLocaleString()}
                 </p>
               </div>
@@ -284,7 +258,7 @@ function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
               />
             </div>
 
-            <div className="border-t border-gray-100 py-[30px] dark:border-gray-700">
+            <div className="border-t border-gray-100 py-5 dark:border-gray-700 md:py-[30px]">
               <h2 className="mb-3 text-[16px]">Наличие</h2>
 
               <label className="flex cursor-pointer items-center gap-3 rounded-md border border-[#ed3a2d] px-4 py-3">
@@ -321,7 +295,7 @@ function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
               </div>
             </div>
 
-            <div className="border-t border-gray-100 py-[30px] dark:border-gray-700">
+            <div className="border-t border-gray-100 py-5 dark:border-gray-700 md:py-[30px]">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-[16px]">Емкость аккумулятора</h2>
                 <GoChevronUp size={30} />
@@ -345,7 +319,7 @@ function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
               </div>
             </div>
 
-            <div className="border-t border-gray-100 py-[30px] dark:border-gray-700">
+            <div className="border-t border-gray-100 py-5 dark:border-gray-700 md:py-[30px]">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-[16px]">Страна производитель</h2>
                 <GoChevronUp size={30} />
@@ -415,19 +389,25 @@ function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
               <div
                 className={
                   viewMode === "grid"
-                    ? "grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-3"
-                    : "flex flex-col gap-4"
+                    ? "grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4"
+                    : "flex flex-col gap-3 sm:gap-4"
                 }
               >
                 {filteredProducts.map((p) => (
-                  <ProductCard key={p.id} product={p} viewMode={viewMode} wishlist={wishlist} toggleWishlist={toggleWishlist} />
+                  <ProductCard
+                    key={p.id}
+                    product={p}
+                    viewMode={viewMode}
+                    wishlist={wishlist}
+                    toggleWishlist={toggleWishlist}
+                  />
                 ))}
               </div>
             )}
 
             {!loading && !error && filteredProducts.length > 0 && (
               <>
-                <div className="m-auto py-8">
+                <div className="m-auto py-6 md:py-8">
                   <button
                     type="button"
                     onClick={() => handlePageChange(currentPage + 1)}
@@ -438,7 +418,7 @@ function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
                   </button>
 
                   <div className="mt-5 flex justify-center">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1 sm:gap-3">
                       <button
                         type="button"
                         onClick={() => handlePageChange(currentPage - 1)}
@@ -448,7 +428,7 @@ function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
                         <MdChevronLeft size={30} />
                       </button>
 
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-1 sm:gap-4">
                         {getPageNumbers().map((page, index) =>
                           page === "..." ? (
                             <span key={`dots-${index}`}>...</span>
@@ -457,7 +437,7 @@ function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
                               type="button"
                               key={page}
                               onClick={() => handlePageChange(page)}
-                              className={`flex h-9 min-w-9 items-center justify-center rounded-md px-2 ${
+                              className={`flex h-9 min-w-8 items-center justify-center rounded-md px-1 sm:min-w-9 sm:px-2 ${
                                 currentPage === page
                                   ? "bg-[#ed3a2d] text-white"
                                   : "hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -481,12 +461,12 @@ function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
                   </div>
                 </div>
 
-                <div className="mt-10">
-                  <h2 className="mb-4 text-xl font-medium">
+                <div className="mt-8 md:mt-10">
+                  <h2 className="mb-4 text-lg font-medium md:text-xl">
                     Популярные категории и модели
                   </h2>
 
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-2 sm:gap-3">
                     {tags.map((tag) => (
                       <button
                         key={tag}
@@ -504,25 +484,32 @@ function ProductsPage({toggleWishlist,wishlist,addToCart,toggleCompare}) {
                   </div>
                 </div>
 
-                <div className="mx-auto max-w-[1200px] px-4 py-8">
-                  <div className="mb-6 flex items-center justify-between">
-                    <h2 className="text-[20px] font-semibold">
+                <div className="mx-auto max-w-[1200px] py-6 md:py-8">
+                  <div className="mb-4 flex items-center justify-between gap-3 md:mb-6">
+                    <h2 className="text-lg font-semibold md:text-[20px]">
                       Товары дешевле:
                     </h2>
 
                     <a
                       href="#"
-                      className="group flex items-center gap-2 text-[13px] font-light text-neutral-400 transition-colors hover:text-[#E8382D]"
+                      className="group flex shrink-0 items-center gap-2 text-[13px] font-light text-neutral-400 transition-colors hover:text-[#E8382D]"
                     >
                       Посмотреть все
-                      <HiOutlineArrowLongRight className="h-7 w-7 transition-transform group-hover:translate-x-1.5" />
+                      <HiOutlineArrowLongRight className="h-6 w-6 transition-transform group-hover:translate-x-1.5 md:h-7 md:w-7" />
                     </a>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-3">
-                      {filteredProducts.slice(0,6).map((p) => (
-                        <ProductCard key={p.id} product={p} wishlist={wishlist} toggleCompare={toggleCompare} toggleWishlist={toggleWishlist} addToCart={addToCart}/>
-                      ))}
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+                    {filteredProducts.slice(0, 6).map((p) => (
+                      <ProductCard
+                        key={p.id}
+                        product={p}
+                        wishlist={wishlist}
+                        toggleCompare={toggleCompare}
+                        toggleWishlist={toggleWishlist}
+                        addToCart={addToCart}
+                      />
+                    ))}
                   </div>
                 </div>
               </>

@@ -3,6 +3,9 @@ export const setToken = (Token)=>{
 }
 
 export const getToken = ()=>{
-    window.localStorage.getItem("Mixel")
+  return window.localStorage.getItem("Mixel")
 }
 
+export const removeToken = ()=>{
+    window.localStorage.removeItem("Mixel")
+}

@@ -9,8 +9,10 @@ import { setToken } from "../../../../Sevices/Token";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [watchPassword,setWatchPassword]=useState(false)
+  const [watchPassword, setWatchPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
   const LoginPage = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -27,86 +29,89 @@ function Login() {
       redirect: "follow",
     };
 
+    setLoading(true);
+
     return fetch(`${baseUrl}/token/`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (result.access) {
           toast.success("krildi");
-          setToken(result.access)
+          setToken(result.access);
           navigate("/");
         } else if (result.detail) {
           toast.error("royxatdan o'tilgan akaunt topilmadi ");
         }
       })
-      .catch((error) => console.error(error));
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
   };
 
   return (
-    <section className="container_1200 mx-auto py-8 md:py-12 px-4 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
-      <div className="hidden md:flex w-full md:w-1/2 bg-[#CBE4E8] justify-center items-center rounded-r-md overflow-hidden">
+    <section className="container_1200 mx-auto flex flex-col items-center justify-between gap-8 px-4 py-8 md:flex-row md:gap-12 md:py-12">
+      <div className="hidden w-full items-center justify-center overflow-hidden rounded-r-md bg-[#CBE4E8] md:flex md:w-1/2">
         <img
           src={cart}
           alt="Log in to Exclusive"
-          className="w-full h-auto object-cover"
+          className="h-auto w-full object-cover"
         />
       </div>
 
-      <div className="w-full md:w-1/2 max-w-96 mx-auto md:mx-0 px-2 sm:px-4">
-        <h1 className="text-2xl sm:text-3xl font-semibold tracking-wide text-black mb-3">
+      <div className="mx-auto w-full max-w-96 px-2 sm:px-4 md:mx-0 md:w-1/2">
+        <h1 className="mb-3 text-2xl font-semibold tracking-wide text-black sm:text-3xl">
           Log in to Mixel
         </h1>
-        <p className="text-sm text-black mb-8 md:mb-10">
+        <p className="mb-8 text-sm text-black md:mb-10">
           Enter your details below
         </p>
 
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            LoginPage()
+            LoginPage();
           }}
           className="flex flex-col gap-6 md:gap-8"
-        >                                                                                                                                                                                    
+        >
           <input
             value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
+            onChange={(e) => setUsername(e.target.value)}
             type="text"
+            autoComplete="username"
             placeholder="Email or Phone Number"
-            className="w-full border-b border-gray-300 pb-2 text-sm outline-none focus:border-black transition-colors bg-transparent placeholder-gray-400"
+            className="w-full border-b border-gray-300 bg-transparent pb-2 text-base placeholder-gray-400 outline-none transition-colors focus:border-black md:text-sm"
           />
 
           <div className="relative">
             <input
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
+              onChange={(e) => setPassword(e.target.value)}
               type={watchPassword ? "text" : "password"}
+              autoComplete="current-password"
               placeholder="Password"
-              className="w-full border-b border-gray-300 pb-2 text-sm outline-none focus:border-black transition-colors bg-transparent placeholder-gray-400 pr-8"
+              className="w-full border-b border-gray-300 bg-transparent pb-2 pr-10 text-base placeholder-gray-400 outline-none transition-colors focus:border-black md:text-sm"
             />
             <button
               type="button"
-              className="absolute right-0 bottom-2 cursor-pointer text-[18px] text-gray-500"
-              onClick={(()=>setWatchPassword((p)=>!p))}
+              aria-label="Show or hide password"
+              className="absolute bottom-0 right-0 cursor-pointer p-2 text-[18px] text-gray-500"
+              onClick={() => setWatchPassword((p) => !p)}
             >
-              {
-                watchPassword ? <FaRegEye/>:<FaRegEyeSlash/>
-              }
-
+              {watchPassword ? <FaRegEye /> : <FaRegEyeSlash />}
             </button>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+          <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
             <button
               type="submit"
-              className="bg-[#DB4444] hover:bg-[#c33838] disabled:opacity-70 disabled:cursor-not-allowed text-white text-sm font-medium py-3 px-8 sm:py-3.5 sm:px-10 rounded transition-colors cursor-pointer flex items-center justify-center gap-2 min-w-[110px]"
+              disabled={loading}
+              className="flex min-w-[110px] w-full cursor-pointer items-center justify-center gap-2 rounded bg-[#DB4444] px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-[#c33838] disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto sm:px-10 sm:py-3.5"
             >
-              Login
+              {loading ? "..." : "Login"}
             </button>
 
-            <a href="#" className="text-[#DB4444] text-sm hover:underline">
+            <a
+              href="#"
+              className="text-center text-sm text-[#DB4444] hover:underline sm:text-left"
+            >
               Forget Password?
             </a>
           </div>

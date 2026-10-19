@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import ProductCard from "../../Componets/ProductCard/ProductCard";
-import { getProducts } from "../../Sevices/App";
 
 function SearchResultsPage({
   searchResults,
@@ -11,25 +9,31 @@ function SearchResultsPage({
 }) {
   return (
     <div className="dark:bg-gray-900">
-      <div className="container_1200 pb-30">
-        <div className="py-[26px] text-sm text-gray-400 dark:text-gray-300">
+      <div className="container_1200 px-4 pb-10 md:px-0 md:pb-[120px]">
+        <div className="py-4 text-sm text-gray-400 dark:text-gray-300 md:py-[26px]">
           Главная
           <span className="mx-1">›</span>
           Результаты поиска
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {searchResults?.map((p) => (
-            <ProductCard
-              key={p.id}
-              product={p}
-              toggleCompare={toggleCompare}
-              wishlist={wishlist}
-              toggleWishlist={toggleWishlist}
-              addToCart={addToCart}
-            />
-          ))}
-        </div>
+        {searchResults?.length === 0 ? (
+          <p className="py-10 text-center text-gray-400 dark:text-gray-300">
+            Ничего не найдено
+          </p>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+            {searchResults?.map((p) => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                toggleCompare={toggleCompare}
+                wishlist={wishlist}
+                toggleWishlist={toggleWishlist}
+                addToCart={addToCart}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

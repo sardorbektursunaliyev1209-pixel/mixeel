@@ -8,7 +8,7 @@ export default function Gaget({ products, loading, wishlist, toggleWishlist ,add
   return (
     <section className="bg-white dark:bg-gray-900 font-[Montserrat,sans-serif] ">
       <div className="mx-auto max-w-[1200px] px-4 py-18 ">
-        <div className="mt-6 flex items-center justify-between">
+        <div className="m-6 flex items-center justify-between">
           <h2 className="text-[20px] text-black dark:text-white font-semibold text-neutral-900">
             Горящие предложения
           </h2>

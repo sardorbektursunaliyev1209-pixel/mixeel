@@ -24,10 +24,20 @@ function App() {
   const [products, setProducts] = useState([]);
   const [loading,setLoading]=useState(true)
   const [searchResults, setSearchResults] = useState([]);
-const [wishlist, setWishlist] = useState([]);
-const [cart,setCart]=useState([])
+const [wishlist, setWishlist] = useState(()=>
+{
+  const saved = localStorage.getItem("wishlist")
+  return saved ? JSON.parse(saved): []
+});
+const [cart,setCart]=useState(()=>{
+  const saved = localStorage.getItem("cart")
+  return saved ? JSON.parse(saved) : []
+})
 
-const [compare,setCompare]=useState([])
+const [compare,setCompare]=useState(()=>{
+  const saved = localStorage.getItem("compare")
+  return saved ?JSON.parse(saved):[]
+})
 
 const toggleCompare  = ((product)=>{
   const isCompared = compare.some((item)=>item.id === product.id)
@@ -39,7 +49,7 @@ const toggleCompare  = ((product)=>{
     setCompare([...compare,product])
   }
 
-  
+
 })
 const addToCart =((product)=>{
 const exists = cart.some((item)=>item.id === product.id)  
@@ -91,6 +101,20 @@ const toggleWishlist = (product) => {
   }
   
 }, [location]);
+
+useEffect(()=>{
+  localStorage.setItem("wishlist",JSON.stringify(wishlist))
+},[wishlist])
+
+
+useEffect(()=>{
+  localStorage.setItem("cart",JSON.stringify(cart))
+},[cart])
+
+useEffect(()=>{
+  localStorage.setItem("compare",JSON.stringify(compare))
+},[compare])
+
   return (
     <>
     <Toaster position="top-center"  expand={false} richColors duration={2000}/>

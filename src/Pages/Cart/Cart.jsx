@@ -13,7 +13,7 @@ function Cart({
     <div className="container_1200 px-4 md:px-0 py-4 md:py-6">
       <h1 className="text-xl md:text-2xl dark:text-white">Корзина</h1>
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 py-4 md:py-5">
+      <div className="grid dark:bg-gray-900 grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 py-4 md:py-5">
         {loading ? (
           Array.from({ length: 10 }).map((_, i) => <CardSkeleton key={i} />)
         ) : cart.length === 0 ? (

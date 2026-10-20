@@ -4,15 +4,37 @@ import { LuScale } from "react-icons/lu";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { HiOutlineTruck, HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 import { FiRefreshCw } from "react-icons/fi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import InstallmentModal from "../../Componets/InstallmentModal/InstallmentModal";
 import { getProductById } from "../../Sevices/App.js";
+import { getToken } from "../../Sevices/Token.js";
 
-function ProductDteil() {
+function ProductDteil({
+  loading,
+  toggleWishlist,
+  wishlist,
+  addToCart,
+  toggleCompare,
+}) {
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [product, setProduct] = useState(null);
 
+    const navigate = useNavigate();
+    const isLike = wishlist?.some((item) => item.id === product?.id);
+  
+    const requireAuth = (action) => () => {
+      if (!getToken()) {
+        navigate("/SingUp");
+      } else {
+        action(product);
+      }
+    };
+  
+    const handleCart = requireAuth(addToCart);
+    const handleWishlist = requireAuth(toggleWishlist);
+    const handleCompare = requireAuth(toggleCompare);
+  
   useEffect(() => {
     getProductById(id).then((data) => setProduct(data));
   }, [id]);
@@ -24,6 +46,7 @@ function ProductDteil() {
       </div>
     );
   }
+
 
   return (
     <div className="dark:bg-gray-900">
@@ -51,6 +74,7 @@ function ProductDteil() {
                 <img
                   key={img.id}
                   src={img.image}
+                  wishlist={wishlist}
                   alt=""
                   className="w-16 h-16 shrink-0 object-cover rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 cursor-pointer hover:border-[#ed3a2d] dark:hover:border-[#ed3a2d] transition-colors"
                 />
@@ -58,7 +82,6 @@ function ProductDteil() {
             </div>
           </div>
 
-          {/* Asosiy ma'lumot */}
           <div className="flex-1 min-w-0">
             <h1 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white">
               {product.name}
@@ -73,18 +96,30 @@ function ProductDteil() {
                 className="text-gray-400 dark:text-gray-400"
               />
               <div className="flex items-center gap-4 sm:ml-4 text-gray-400 dark:text-gray-400">
+                <button onClick={handleCart} type="button">
                 <MdShoppingCart
                   size={20}
                   className="cursor-pointer hover:text-[#ed3a2d] dark:hover:text-[#ed3a2d]"
                 />
+                </button>
+                
+                <button onClick={handleWishlist} type="button">
+                  
+
                 <MdFavorite
+                
                   size={20}
-                  className="cursor-pointer hover:text-[#ed3a2d] dark:hover:text-[#ed3a2d]"
+                  className={`cursor-pointer hover:text-[#ed3a2d] dark:hover:text-[#ed3a2d] ${isLike ? "text-[#E8382D]" : "dark:text-white"}`}
                 />
+                </button>
+
+                <button onClick={handleCompare}>
+
                 <LuScale
                   size={20}
                   className="cursor-pointer hover:text-[#ed3a2d] dark:hover:text-[#ed3a2d]"
                 />
+                </button>
               </div>
             </div>
 
@@ -135,7 +170,10 @@ function ProductDteil() {
                     Если купите товар сегодня, до 06 мая можете вернуть или
                     обменять.
                   </p>
-                  <a href="#" className="text-xs text-[#ed3a2d] hover:underline">
+                  <a
+                    href="#"
+                    className="text-xs text-[#ed3a2d] hover:underline"
+                  >
                     Подробнее о программе.
                   </a>
                 </div>

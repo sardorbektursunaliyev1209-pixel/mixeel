@@ -1,23 +1,26 @@
-import { useState } from "react";
-import cart from "../../../../../public/SingUp-img/cart.png";
+import { Link, useNavigate } from "react-router-dom";
 import { baseUrl } from "../../../../Sevices/Config";
+import { useState } from "react";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { setToken } from "../../../../Sevices/Token";
 
-function Login() {
+function SignUp() {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [watchPassword, setWatchPassword] = useState(false);
   const navigate = useNavigate();
 
-  const LoginPage = () => {
+  const handleSignUp = () => {
+    setLoading(true);
+
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     const raw = JSON.stringify({
-      username: username,
+      username: username.trim(),
+      email: email.trim(),
       password: password,
     });
 
@@ -28,94 +31,137 @@ function Login() {
       redirect: "follow",
     };
 
-    return fetch(`${baseUrl}/token/`, requestOptions)
+    return fetch(`${baseUrl}/users/register`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        if (result.access) {
-          toast.success("krildi");
-          setToken(result.access);
-          navigate("/");
-        } else if (result.detail) {
-          toast.error("royxatdan o'tilgan akaunt topilmadi ");
+        if (result.username) {
+          toast.success("Account created!");
+          navigate("/Login");
+        } else if (result.email) {
+          toast.warning(result.email);
+        } else {
+          toast.error(result.message || "Something went wrong");
         }
       })
-      .catch((error) => console.error(error));
+      .catch(() => toast.error("Network error"))
+      .finally(() => setLoading(false));
   };
 
-  const inputClass =
-    "w-full border-b border-gray-300 bg-transparent pb-2 text-sm text-black outline-none transition-colors placeholder-gray-400 focus:border-black dark:border-gray-600 dark:text-white dark:placeholder-gray-500 dark:focus:border-white";
+  const field =
+    "w-full border-b border-gray-300 bg-transparent pb-3 pt-2 text-base text-black outline-none transition-colors placeholder:text-gray-400 focus:border-black dark:border-gray-600 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-white sm:text-[14px]";
 
   return (
-    <section className="min-h-screen bg-white text-black transition-colors duration-300 dark:bg-gray-900 dark:text-white">
-      <div className="container_1200 mx-auto flex flex-col items-center justify-between gap-8 px-4 py-8 md:flex-row md:gap-12 md:py-12">
-        <div className="hidden w-full items-center justify-center overflow-hidden rounded-r-md bg-[#CBE4E8] dark:bg-gray-800 md:flex md:w-1/2">
-          <img
-            src={cart}
-            alt="Log in to Exclusive"
-            className="h-auto w-full object-cover"
-          />
-        </div>
-
-        <div className="mx-auto w-full max-w-96 px-2 sm:px-4 md:mx-0 md:w-1/2">
-          <h1 className="mb-3 text-2xl font-semibold tracking-wide text-black dark:text-white sm:text-3xl">
-            Log in to Mixel
-          </h1>
-          <p className="mb-8 text-sm text-black dark:text-gray-400 md:mb-10">
-            Enter your details below
-          </p>
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              LoginPage();
-            }}
-            className="flex flex-col gap-6 md:gap-8"
-          >
-            <input
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              type="text"
-              placeholder="Email or Phone Number"
-              autoComplete="username"
-              className={inputClass}
-            />
-
-            <div className="relative">
-              <input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type={watchPassword ? "text" : "password"}
-                placeholder="Password"
-                autoComplete="current-password"
-                className={`${inputClass} pr-8`}
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      <div className="py-8 sm:py-10">
+        <div className="container_1200 px-4">
+          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-24">
+            <div className="hidden bg-[#C9E3E8] dark:bg-gray-800 lg:block">
+              <img
+                src="/SingUp-img/cart.png"
+                alt=""
+                className="h-[560px] w-full object-contain dark:opacity-90"
               />
-              <button
-                type="button"
-                aria-label={watchPassword ? "Hide password" : "Show password"}
-                className="absolute bottom-2 right-0 cursor-pointer text-[18px] text-gray-500 transition-colors hover:text-black dark:text-gray-400 dark:hover:text-white"
-                onClick={() => setWatchPassword((p) => !p)}
-              >
-                {watchPassword ? <FaRegEye /> : <FaRegEyeSlash />}
-              </button>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-              <button
-                type="submit"
-                className="flex min-w-[110px] cursor-pointer items-center justify-center gap-2 rounded bg-[#DB4444] px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-[#c33838] disabled:cursor-not-allowed disabled:opacity-70 sm:px-10 sm:py-3.5"
-              >
-                Login
-              </button>
+            <div className="mx-auto w-full max-w-sm lg:max-w-96">
+              <h2 className="text-3xl font-semibold leading-tight text-black dark:text-white sm:text-[42px] sm:leading-none">
+                Create an account
+              </h2>
 
-              <a href="#" className="text-sm text-[#DB4444] hover:underline">
-                Forget Password?
-              </a>
+              <p className="mb-10 mt-3 text-[13px] text-[#555] dark:text-gray-400 sm:mb-12">
+                Enter your details below
+              </p>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSignUp();
+                }}
+                className="space-y-6 sm:space-y-7"
+              >
+                <input
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  type="text"
+                  required
+                  minLength={2}
+                  autoComplete="username"
+                  placeholder="Name"
+                  className={field}
+                />
+
+                <input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  type="email"
+                  required
+                  autoComplete="email"
+                  placeholder="Email"
+                  className={field}
+                />
+
+                <div className="relative">
+                  <input
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    type={watchPassword ? "text" : "password"}
+                    required
+                    minLength={6}
+                    autoComplete="new-password"
+                    placeholder="Password"
+                    className={`${field} pr-10`}
+                  />
+                  <button
+                    type="button"
+                    aria-label={
+                      watchPassword ? "Hide password" : "Show password"
+                    }
+                    onClick={() => setWatchPassword((p) => !p)}
+                    className="absolute bottom-1 right-0 flex h-9 w-9 cursor-pointer items-center justify-center text-lg text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"
+                  >
+                    {watchPassword ? <FaRegEye /> : <FaRegEyeSlash />}
+                  </button>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded bg-[#db4444] text-[15px] font-medium text-white duration-300 hover:bg-[#c53b3b] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {loading && (
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                  )}
+                  {loading ? "Loading..." : "Create Account"}
+                </button>
+
+                <button
+                  type="button"
+                  className="flex h-14 w-full cursor-pointer items-center justify-center gap-3 rounded border border-[#d9d9d9] text-[15px] text-[#333] transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                >
+                  <img
+                    src="/SingUp-img/google.png"
+                    alt=""
+                    className="h-5 w-5"
+                  />
+                  Sign up with Google
+                </button>
+
+                <div className="flex justify-center gap-2 pt-2 text-[14px] text-[#777] dark:text-gray-400">
+                  <span>Already have account?</span>
+                  <Link
+                    to="/Login"
+                    className="font-medium text-black dark:text-white"
+                  >
+                    Log in
+                  </Link>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 
-export default Login;
+export default SignUp;

@@ -10,7 +10,8 @@ function Wishlist({
   toggleCompare,
 }) {
   return (
-    <>
+
+<>
       <div className="Wishlist bg-white dark:bg-gray-900">
         <div className="container_1200 px-4 md:px-0">
           <div className="flex flex-wrap items-center gap-2 py-4 text-sm text-gray-400 md:py-[27px] md:text-base">

@@ -13,7 +13,7 @@ export default function ProductCard({
   toggleCompare,
   addToCart,
 }) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const isLike = wishlist?.some((item) => item.id === product.id);
 
   const requireAuth = (action) => () => {

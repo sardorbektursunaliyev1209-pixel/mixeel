@@ -20,59 +20,56 @@ import { Toaster } from "sonner";
 import Cart from "./Pages/Cart/Cart";
 import { getToken } from "./Sevices/Token";
 function App() {
-  const location = useLocation()
+  const location = useLocation();
   const [products, setProducts] = useState([]);
-  const [loading,setLoading]=useState(true)
+  const [loading, setLoading] = useState(true);
   const [searchResults, setSearchResults] = useState([]);
-const [wishlist, setWishlist] = useState(()=>
-{
-  const saved = localStorage.getItem("wishlist")
-  return saved ? JSON.parse(saved): []
-});
-const [cart,setCart]=useState(()=>{
-  const saved = localStorage.getItem("cart")
-  return saved ? JSON.parse(saved) : []
-})
+  const [wishlist, setWishlist] = useState(() => {
+    const saved = localStorage.getItem("wishlist");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [cart, setCart] = useState(() => {
+    const saved = localStorage.getItem("cart");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-const [compare,setCompare]=useState(()=>{
-  const saved = localStorage.getItem("compare")
-  return saved ?JSON.parse(saved):[]
-})
+  const [compare, setCompare] = useState(() => {
+    const saved = localStorage.getItem("compare");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-const toggleCompare  = ((product)=>{
-  const isCompared = compare.some((item)=>item.id === product.id)
+  const toggleCompare = (product) => {
+    const isCompared = compare.some((item) => item.id === product.id);
 
-  if (isCompared) {
-    setCompare(compare.filter((item)=>item.id !== product.id))
-    
-  } else{
-    setCompare([...compare,product])
-  }
+    if (isCompared) {
+      setCompare(compare.filter((item) => item.id !== product.id));
+    } else {
+      setCompare([...compare, product]);
+    }
+  };
+  const addToCart = (product) => {
+    const exists = cart.some((item) => item.id === product.id);
+    if (exists) {
+      setCart(
+        cart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
+        ),
+      );
+    } else {
+      setCart([...cart, { ...product, quantity: 1 }]);
+    }
+  };
+  const toggleWishlist = (product) => {
+    const exists = wishlist.some((item) => item.id === product.id);
 
-
-})
-const addToCart =((product)=>{
-const exists = cart.some((item)=>item.id === product.id)  
-if (exists) {
-  setCart(
-    cart.map((item) =>
-      item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-    )
-
-  );
-}else{
-  setCart([...cart ,{...product ,quantity: 1}])
-}
-})
-const toggleWishlist = (product) => {
-  const exists = wishlist.some((item) => item.id === product.id);
-
-  if (exists) {
-    setWishlist(wishlist.filter((item) => item.id !== product.id));
-  } else {
-    setWishlist([...wishlist, product]);
-  }
-};
+    if (exists) {
+      setWishlist(wishlist.filter((item) => item.id !== product.id));
+    } else {
+      setWishlist([...wishlist, product]);
+    }
+  };
   const filterData = (text) => {
     const filtered = products.results.filter((item) =>
       item.name.toLowerCase().includes(text.toLowerCase()),
@@ -82,67 +79,140 @@ const toggleWishlist = (product) => {
   useEffect(() => {
     getProducts().then((data) => {
       setProducts(data);
-      setLoading(false)
+      setLoading(false);
     });
-
   }, []);
- useEffect(() => {
-  if (!getToken()) return;
+  useEffect(() => {
+    if (!getToken()) return;
 
-  const pending = localStorage.getItem("pendingWishlist");
-  if (!pending) return;
+    const pending = localStorage.getItem("pendingWishlist");
+    if (!pending) return;
 
-  const product = JSON.parse(pending);
-  localStorage.removeItem("pendingWishlist");
+    const product = JSON.parse(pending);
+    localStorage.removeItem("pendingWishlist");
 
-  const exists = wishlist.some((item) => item.id === product.id);
-  if (!exists) {
-    toggleWishlist(product);
-  }
-  
-}, [location]);
+    const exists = wishlist.some((item) => item.id === product.id);
+    if (!exists) {
+      toggleWishlist(product);
+    }
+  }, [location]);
 
-useEffect(()=>{
-  localStorage.setItem("wishlist",JSON.stringify(wishlist))
-},[wishlist])
+  useEffect(() => {
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  }, [wishlist]);
 
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
-useEffect(()=>{
-  localStorage.setItem("cart",JSON.stringify(cart))
-},[cart])
-
-useEffect(()=>{
-  localStorage.setItem("compare",JSON.stringify(compare))
-},[compare])
+  useEffect(() => {
+    localStorage.setItem("compare", JSON.stringify(compare));
+  }, [compare]);
 
   return (
     <>
-    <Toaster position="top-center"  expand={false} richColors duration={2000}/>
-      <Navbar filterData={filterData}  />
+      <Toaster
+        position="top-center"
+        expand={false}
+        richColors
+        duration={2000}
+      />
+      <Navbar filterData={filterData} />
       <Routes>
         <Route
           path="/"
           element={
             <>
               <Hero />
-              <Home   toggleWishlist={toggleWishlist}  wishlist={wishlist} addToCart={addToCart} toggleCompare={toggleCompare}/>
+              <Home
+                toggleWishlist={toggleWishlist}
+                wishlist={wishlist}
+                addToCart={addToCart}
+                toggleCompare={toggleCompare}
+              />
             </>
           }
         />
-        <Route path="/Checkout" element={<CheckoutPage  cart={cart} loading={loading}/>} />
-        <Route path="/category/:id" element={<ProductsPage  toggleWishlist={toggleWishlist} toggleCompare={toggleCompare} wishlist={wishlist}  addToCart={addToCart} />} />
-        <Route path="/Deteil/:id" element={<ProductDteil />} />
+        <Route
+          path="/Checkout"
+          element={<CheckoutPage cart={cart} loading={loading} />}
+        />
+        <Route
+          path="/category/:id"
+          element={
+            <ProductsPage
+              toggleWishlist={toggleWishlist}
+              toggleCompare={toggleCompare}
+              wishlist={wishlist}
+              addToCart={addToCart}
+            />
+          }
+        />
+        <Route
+          path="/Deteil/:id"
+          element={
+            <ProductDteil
+              toggleWishlist={toggleWishlist}
+              toggleCompare={toggleCompare}
+              wishlist={wishlist}
+              addToCart={addToCart}
+            />
+          }
+        />
         <Route
           path="/search"
-          element={<SearchResultsPage searchResults={searchResults} toggleCompare={toggleCompare}  toggleWishlist={toggleWishlist} wishlist={wishlist} addToCart={addToCart}  />}
+          element={
+            <SearchResultsPage
+              searchResults={searchResults}
+              toggleCompare={toggleCompare}
+              toggleWishlist={toggleWishlist}
+              wishlist={wishlist}
+              addToCart={addToCart}
+            />
+          }
         />
         <Route path="/info" element={<InfoPage />} />
-        <Route path="/ComparePage" element={<ComparePage compere={compare} products={products } toggleCompare={toggleCompare} wishlist={wishlist} toggleWishlist={toggleWishlist} addToCart={addToCart}/>} />
-        <Route path="/Wishlist" element={<Wishlist products={products } toggleCompare={toggleCompare} loading={loading} toggleWishlist={toggleWishlist}  wishlist={wishlist} addToCart={addToCart}/>}  />
+        <Route
+          path="/ComparePage"
+          element={
+            <ComparePage
+              compere={compare}
+              products={products}
+              toggleCompare={toggleCompare}
+              wishlist={wishlist}
+              toggleWishlist={toggleWishlist}
+              addToCart={addToCart}
+            />
+          }
+        />
+        <Route
+          path="/Wishlist"
+          element={
+            <Wishlist
+              products={products}
+              toggleCompare={toggleCompare}
+              loading={loading}
+              toggleWishlist={toggleWishlist}
+              wishlist={wishlist}
+              addToCart={addToCart}
+            />
+          }
+        />
         <Route path="/SingUp" element={<SingUp />} />
-
         <Route path="/Login" element={<Login />} />
-<Route path="/Cart" element={<Cart cart={cart} wishlist={wishlist} toggleCompare={toggleCompare}  toggleWishlist={toggleWishlist} addToCart={addToCart} />} />      </Routes>
+        <Route
+          path="/Cart"
+          element={
+            <Cart
+              cart={cart}
+              wishlist={wishlist}
+              toggleCompare={toggleCompare}
+              toggleWishlist={toggleWishlist}
+              addToCart={addToCart}
+            />
+          }
+        />{" "}
+      </Routes>
       <AuthModal />
       <Footer />
     </>
